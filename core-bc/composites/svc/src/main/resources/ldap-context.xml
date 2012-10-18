@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+  <!-- Spring ldap -->
+  <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+    <property name="url" value="${BIND_URL}"/>
+    <property name="base" value="${BASE}"/>
+    <property name="userDn" value="${BIND_DN}"/>
+    <property name="password" value="${BIND_PW}"/>
+    <property name="pooled" value="false"/> <!-- Must be false if wrapped by a PoolingContextSource -->
+  </bean>
+
+  <bean id="poolingContextSource" class="org.springframework.ldap.pool.factory.PoolingContextSource">
+    <property name="contextSource" ref="contextSource"/>
+    <property name="testWhileIdle" value="true"/>
+    <property name="testOnBorrow" value="true"/>
+    <!--<property name="timeBetweenEvictionRunsMillis" value="1800000"/> &lt;!&ndash; 1000 * 60 * 30 = 30 minutes &ndash;&gt;-->
+    <property name="dirContextValidator" ref="dirContextValidator"/>
+  </bean>
+
+  <bean id="dirContextValidator" class="org.springframework.ldap.pool.validation.DefaultDirContextValidator"/>
+
+  <bean id="ldapTemplate" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
+    <constructor-arg ref="poolingContextSource"/>
+  </bean>
+
+  <bean id="ldapProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="locations">
+      <list>
+        <value>classpath:ldap.properties</value>
+        <value>classpath:security.properties</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ldapService" class="se.vgregion.ldapservice.LdapServiceImpl">
+    <constructor-arg index="0" ref="ldapProperties"/>
+  </bean>
+
+  <bean id="simpleLdapService" class="se.vgregion.ldapservice.SimpleLdapServiceImpl">
+    <constructor-arg ref="ldapTemplate"/>
+  </bean>
+
+  <!--<bean id="ldapServiceWrapper" class="se.vgregion.ldapservice.AsyncCachingLdapServiceWrapper">
+    <constructor-arg index="0" ref="ldapService"/>
+    &lt;!&ndash; 600000 = ten minutes &ndash;&gt;
+    <constructor-arg index="1" value="600000"/>
+  </bean>-->
+  <!--<bean id="simpleLdapServiceWrapper" class="se.vgregion.ldapservice.AsyncCachingLdapServiceWrapper">
+    <constructor-arg index="0" ref="simpleLdapService"/>
+    &lt;!&ndash; 600000 = ten minutes &ndash;&gt;
+    <constructor-arg index="1" value="600000"/>
+  </bean>-->
+
+  <bean class="se.vgregion.portal.dentalgrant.service.DentalLdapService">
+    <constructor-arg ref="ldapService"/>
+    <constructor-arg ref="simpleLdapService"/>
+  </bean>
+
+</beans>
