@@ -34,7 +34,7 @@
     <property name="locations">
       <list>
         <value>classpath:ldap.properties</value>
-        <value>classpath:security.properties</value>
+        <value>file:${user.home}/.rp/tandvard-intyg/security.properties</value>
       </list>
     </property>
   </bean>

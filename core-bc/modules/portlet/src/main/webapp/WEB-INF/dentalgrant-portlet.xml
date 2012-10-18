@@ -28,7 +28,8 @@
 
   <import resource="classpath*:ldap-context.xml"/>
 
-  <context:property-placeholder location="classpath*:security.properties,classpath*:ldap.properties"/>
+  <context:property-placeholder location="file:${user.home}/.rp/tandvard-intyg/security.properties,classpath*:ldap.properties"
+          ignore-resource-not-found="false"/>
 
   <context:component-scan base-package="se.vgregion.portal.dentalgrant.controller"/>
 
