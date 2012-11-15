@@ -1,0 +1,52 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+  <xs:import schemaLocation="xsd2.xml" namespace="http://schemas.datacontract.org/2004/07/Tears.Proxy.Interface"/>
+  <xs:import schemaLocation="xsd1.xml" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+  <xs:element name="GetPatient">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="personalNumber" nillable="true" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPatientResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Tears.Proxy.Interface" minOccurs="0" name="GetPatientResult" nillable="true" type="q1:Patient"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPatientCategoryList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="groupId" type="xs:int"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPatientCategoryListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Tears.Proxy.Interface" minOccurs="0" name="GetPatientCategoryListResult" nillable="true" type="q2:ArrayOfPatientCategory"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InsertCertificate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="personnummer" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="patientkategoriId" type="xs:int"/>
+        <xs:element minOccurs="0" name="namn" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="adress" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="postadress" nillable="true" type="xs:string"/>
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="hsaId" type="q3:guid"/>
+        <xs:element minOccurs="0" name="registreradAv" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="förskrivarKod" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="läkarensNamn" nillable="true" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InsertCertificateResponse">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

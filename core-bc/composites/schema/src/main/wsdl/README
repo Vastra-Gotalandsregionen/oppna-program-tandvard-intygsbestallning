@@ -1,0 +1,6 @@
+The wsdl file has been downloaded from https://vgms0086.vgregion.se/vgregion/Tears.Proxy/Certificate.svc?wsdl and edited
+to get the xsdX.xml files from disk instead of URLs.
+
+The xsdX.xml files have been collected from https://vgms0086.vgregion.se/vgregion/Tears.Proxy/Certificate.svc?xsd=xsdX
+(change the "X" to the corresponding number). The xsd0.xml file have also been modified to get the other two from disk
+instead of from URLs.
