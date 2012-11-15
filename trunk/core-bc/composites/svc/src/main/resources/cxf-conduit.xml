@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:http="http://cxf.apache.org/transports/http/configuration"
+       xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:cxf="http://cxf.apache.org/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                            http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+                             http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+  <http:conduit name="*.http-conduit">
+    <!--<http:conduit name="https://vgms0086.vgregion.se/.*">-->
+    <http:tlsClientParameters disableCNCheck="true">
+      <sec:trustManagers>
+        <sec:keyStore type="jks" password="changeit" resource="star_vgregion.ts"/>
+      </sec:trustManagers>
+      <!-- It is possible to add a keyManager for mutual authentication. -->
+      <!--<sec:keyManagers keyPassword="clientpass">
+        <sec:keyStore type="jks" password="clientpass" resource="cert/clientkeystore.jks"/>
+      </sec:keyManagers>-->
+    </http:tlsClientParameters>
+  </http:conduit>
+
+  <cxf:bus>
+    <cxf:outInterceptors>
+      <ref bean="addHeaderInterceptor"/>
+      <ref bean="loggingOutInterceptor"/>
+    </cxf:outInterceptors>
+    <cxf:inInterceptors>
+      <ref bean="loggingInInterceptor"/>
+    </cxf:inInterceptors>
+  </cxf:bus>
+
+  <bean id="addHeaderInterceptor" class="se.vgregion.portal.dentalgrant.service.cxf.AddHeaderInterceptor"/>
+
+  <bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+  <bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+
+</beans>

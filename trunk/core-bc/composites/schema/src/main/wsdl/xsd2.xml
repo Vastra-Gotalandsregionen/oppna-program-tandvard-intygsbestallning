@@ -1,0 +1,35 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Tears.Proxy.Interface" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Tears.Proxy.Interface">
+  <xs:complexType name="Patient">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Adress" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Avliden" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="Avregisteringsdatum" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Efternamn" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Förnamn" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IntygGiltighetstidFh" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="IntygRegistreratFh" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="IntygsnummerFh" type="xs:int"/>
+      <xs:element minOccurs="0" name="Länskod" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Meddelande" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Personnummer" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Postnummer" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Postort" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Sekretessmarkering" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="Status" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Patient" nillable="true" type="tns:Patient"/>
+  <xs:complexType name="ArrayOfPatientCategory">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PatientCategory" nillable="true" type="tns:PatientCategory"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPatientCategory" nillable="true" type="tns:ArrayOfPatientCategory"/>
+  <xs:complexType name="PatientCategory">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="PatientCategoryId" type="xs:int"/>
+      <xs:element minOccurs="0" name="PatientCategoryName" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PatientCategory" nillable="true" type="tns:PatientCategory"/>
+</xs:schema>

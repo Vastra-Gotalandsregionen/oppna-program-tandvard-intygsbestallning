@@ -30,4 +30,8 @@
     <url>svn://svn.vgregion.se/</url>
   </scm>
 
+  <properties>
+    <apache.cxf.version>2.4.1</apache.cxf.version>
+  </properties>
+
 </project>

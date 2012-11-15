@@ -22,7 +22,6 @@ Generation time : 2012-10-15 13:30:25 CEST
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
 
-<!-- UNCOMMENT AND CHANGE THIS TO USE JAX-WS WSDL CODE GENERATION
   <build>
     <plugins>
       <plugin>
@@ -37,7 +36,8 @@ Generation time : 2012-10-15 13:30:25 CEST
               <sourceRoot>${basedir}/target/generated/wsdl</sourceRoot>
               <wsdlOptions>
                 <wsdlOption>
-                  <wsdl>${basedir}/src/main/wsdl/AddressServices_1.0.wsdl</wsdl>
+                  <wsdl>${basedir}/src/main/wsdl/Certificate.svc.wsdl</wsdl>
+                  <!--<wsdl>https://vgms0086.vgregion.se/vgregion/Tears.Proxy/Certificate.svc?wsdl</wsdl>-->
                 </wsdlOption>
               </wsdlOptions>
             </configuration>
@@ -49,7 +49,6 @@ Generation time : 2012-10-15 13:30:25 CEST
       </plugin>
     </plugins>
   </build>
--->
 
   <dependencies>
     <dependency>
