@@ -7,7 +7,7 @@ Template version: 1.5
 Generation time : 2012-10-15 13:30:25 CEST
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>se.vgregion.dental-grant</groupId>
@@ -90,7 +90,7 @@ Generation time : 2012-10-15 13:30:25 CEST
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -99,6 +99,11 @@ Generation time : 2012-10-15 13:30:25 CEST
       <groupId>se.vgregion.healthcare-context</groupId>
       <artifactId>healthcare-context-patient-context-composite-webcomp</artifactId>
       <version>1.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
     </dependency>
   </dependencies>
 

@@ -26,13 +26,15 @@ public class CertificateServiceIT {
     public void testGetPatient() throws Exception {
         Patient patient = certificateService.getPatient("191311214827");
 
+        // This may need to be changed if the service is changed
         assertEquals("Magna Josefina", patient.getFörnamn().getValue());
     }
 
     @Test
     public void testGetPatientCategoryList() {
-        List<PatientCategory> patientCategoryList = certificateService.getPatientCategoryList(2);
+        List<PatientCategory> patientCategoryList = certificateService.getPatientCategoryList();
 
+        // This may need to be changed if the service is changed
         assertEquals("S01, missbildning", patientCategoryList.get(0).getPatientCategoryName().getValue());
     }
 }
