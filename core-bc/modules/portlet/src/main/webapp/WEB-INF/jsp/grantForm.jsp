@@ -33,14 +33,15 @@
     }
 
     #optionList {
-        overflow-y: scroll; max-height: 500px;
+        overflow-y: scroll;
+        max-height: 500px;
         overflow-x: hidden;
     }
 
-   /* .search-result-dialog {
-        max-width: 70%;
-        min-width: 100px;
-    }*/
+        /* .search-result-dialog {
+            max-width: 70%;
+            min-width: 100px;
+        }*/
 
 </style>
 
@@ -50,28 +51,36 @@
 
 <div class="dental-grant-wrap">
 
-    <c:if test="${not empty message}">
-        <span class="portlet-msg-info">${message}</span>
-    </c:if>
-    <c:if test="${not empty errorMessages}">
-        <c:forEach items="${errorMessages}" var="errorMessage">
-            <span class="portlet-msg-error">${errorMessage}</span>
-        </c:forEach>
-    </c:if>
-
     <form action="${submit}" method="post">
+
+        <c:if test="${not empty message}">
+            <span class="portlet-msg-info">${message}</span>
+        </c:if>
+        <c:if test="${not empty errorMessages}">
+            <c:forEach items="${errorMessages}" var="errorMessage">
+                <span class="portlet-msg-error">
+                    ${errorMessage}
+                    <c:if test="${renewOption}">
+                        <input type="submit" name="renewGrant" value="Förnya intyg"/>
+                    </c:if>
+                </span>
+            </c:forEach>
+        </c:if>
+
         <table>
             <tr>
                 <td>Personnummer patient:</td>
-                <td><input type="text" name="personalNumber" value="${patientPersonalNumber}"/></td>
+                <td><input type="text" name="personalNumber" value="${personalNumber}"/></td>
             </tr>
             <tr>
                 <td>Patientkategori:</td>
-                <td><select>
-                    <option value="1">Kategori 1</option>
-                    <option value="2">Kategori 2</option>
-                </select></td>
-
+                <td>
+                    <select name="patientCategory">
+                        <c:forEach items="${patientCategoryList}" var="category">
+                            <option value="${category.patientCategoryId}">${category.patientCategoryName.value}</option>
+                        </c:forEach>
+                    </select>
+                </td>
             </tr>
         </table>
         <fieldset>
@@ -84,7 +93,8 @@
                     <td>VGR-id:</td>
                     <td><input id="<portlet:namespace />vgrId" type="text" name="vgrId" value="${vgrId}"/></td>
                     <td>
-                        <input type="submit" name="submitSearch" id="<portlet:namespace />searchPrescriberButton" value="Sök"/>
+                        <input type="submit" name="submitSearch" id="<portlet:namespace />searchPrescriberButton"
+                               value="Sök"/>
                     </td>
                 </tr>
                 <tr>
@@ -97,11 +107,12 @@
                 </tr>
                 <tr>
                     <td>Förskrivarkod:</td>
-                    <td><span id="<portlet:namespace />hsaPersonPrescriptionCode">${hsaPersonPrescriptionCode}</span></td>
+                    <td><span id="<portlet:namespace />hsaPersonPrescriptionCode">${hsaPersonPrescriptionCode}</span>
+                    </td>
                 </tr>
             </table>
         </fieldset>
-        <input type="submit" name="submitGrant" value="Skicka intyg"/>
+        <input type="submit" name="submitGrant" value="Fortsätt"/>
     </form>
 </div>
 

@@ -2,14 +2,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:http="http://cxf.apache.org/transports/http/configuration"
-       xmlns:sec="http://cxf.apache.org/configuration/security"
+       xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                             http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
-                             http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd">
+                             http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
   <bean class="se.vgregion.portal.dentalgrant.service.CXFInit" init-method="init"/>
 
   <bean class="se.vgregion.portal.dentalgrant.service.CertificateService"/>
+
+  <task:annotation-driven executor="patientCategoriesUpdaterExecutor" scheduler="patientCategoriesUpdaterScheduler"/>
+
+  <task:executor id="patientCategoriesUpdaterExecutor" pool-size="2"/>
+
+  <task:scheduler id="patientCategoriesUpdaterScheduler" pool-size="2"/>
 
 </beans>

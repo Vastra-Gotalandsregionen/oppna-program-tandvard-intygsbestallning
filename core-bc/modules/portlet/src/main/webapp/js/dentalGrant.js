@@ -39,7 +39,7 @@ function addOnClickListener(url, searchButton, A, vgrIdInput, namespace) {
                     var html = "", htmlArray = [];
                     htmlArray.push('<div id="optionList"><table class="search-result">');
                     htmlArray.push('<tr><th>VGR-ID</th><th>Förnamn</th><th>Efternamn</th>',
-                        '<th>Förvaltning</th><th>Enhet</th><th>Förskrivarkod</th><th>&nbsp;</th></tr>');
+                        '<th>Förvaltning</th><th>Enhet</th><th>Förskrivarkod</th><th>HSA-titel</th><th>&nbsp;</th></tr>');
 
                     var count = 0;
                     for (var key in items) {
@@ -58,6 +58,7 @@ function addOnClickListener(url, searchButton, A, vgrIdInput, namespace) {
                             hsaPersonPrescriptionCode = '<i>Ej förskrivare</i>'
                         }
                         htmlArray.push('<td class="hsaPersonPrescriptionCode-column">', hsaPersonPrescriptionCode, '</td>'); // attributeName : value
+                        htmlArray.push('<td class="hsaTitle-column">', personEntry['hsaTitle'], '</td>'); // attributeName : value
 
                         htmlArray.push('</tr>');
                     }
@@ -74,15 +75,16 @@ function addOnClickListener(url, searchButton, A, vgrIdInput, namespace) {
                                 //cssClass: 'search-result-dialog',
                                 bodyContent:html,
                                 modal:true,
-                                title:'Din sökning gav ' + count + ' träffar. Välj en sökträff med förskrivarkod.',
-                                width: 700
+                                title:'Din sökning gav ' + count + ' träffar. Välj en sökträff med förskrivarkod och HSA-titel "Läkare".',
+                                width: 800
                             }
                         )
                     ).render();
 
                     A.one('#optionList').one('table').all('tr.entry-row').each(function (node, index, list) {
                         var hsaPersonPrescriptionCode = node.one('.hsaPersonPrescriptionCode-column').html();
-                        if (isNaN(hsaPersonPrescriptionCode)) {
+                        var hsaTitle = node.one('.hsaTitle-column').html();
+                        if (isNaN(hsaPersonPrescriptionCode) || hsaTitle.toLowerCase() !== 'läkare') {
                             return;
                         }
 
