@@ -1,8 +1,21 @@
 package se.vgregion.portal.dentalgrant.controller;
 
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.User;
-import com.liferay.portal.theme.ThemeDisplay;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletRequest;
+import javax.portlet.RenderRequest;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.soap.SOAPFaultException;
+
 import org.datacontract.schemas._2004._07.tears_proxy.Patient;
 import org.datacontract.schemas._2004._07.tears_proxy.PatientCategory;
 import org.slf4j.Logger;
@@ -14,20 +27,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
+
 import se.vgregion.ldapservice.LdapUser;
 import se.vgregion.portal.dentalgrant.service.CertificateService;
 import se.vgregion.portal.dentalgrant.service.DentalLdapService;
 import se.vgregion.portal.patient.event.PersonNummer;
 
-import javax.portlet.*;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.ws.soap.SOAPFaultException;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.model.User;
+import com.liferay.portal.theme.ThemeDisplay;
 
 /**
  * @author Patrik Bergström
@@ -57,8 +65,8 @@ public class DentalGrantController {
         List<LdapUser> ldapUsers = dentalLdapService.searchByUserIdQuery(user.getScreenName());
 
         if (ldapUsers.size() != 1) {
-            LOGGER.error("An LDAP search for " + user.getScreenName() + "resulted in " + ldapUsers.size() + " number "
-                    + "if hits. There should be exactly one hit so this needs to be looked into.");
+            LOGGER.error("An LDAP search for " + user.getScreenName() + "resulted in " + ldapUsers.size()
+                    + " number " + "if hits. There should be exactly one hit so this needs to be looked into.");
         } else {
             LdapUser ldapUser = ldapUsers.get(0);
 
@@ -98,9 +106,9 @@ public class DentalGrantController {
                 String o = ldapUser.getAttributeValue("o");
                 String ou = ldapUser.getAttributeValue("ou");
 
-                json.append(String.format("'%s':{'givenName':'%s','sn':'%s','hsaPersonPrescriptionCode':'%s'," +
-                        "'hsaTitle':'%s','o':'%s','ou':'%s'},",
-                        foundVgrId, givenName, sn, hsaPersonPrescriptionCode, hsaTitle, o, ou));
+                json.append(String.format("'%s':{'givenName':'%s','sn':'%s','hsaPersonPrescriptionCode':'%s',"
+                        + "'hsaTitle':'%s','o':'%s','ou':'%s'},", foundVgrId, givenName, sn,
+                        hsaPersonPrescriptionCode, hsaTitle, o, ou));
             }
 
             json.deleteCharAt(json.length() - 1);
@@ -116,8 +124,8 @@ public class DentalGrantController {
             bos = new BufferedOutputStream(out);
 
             String result = json.toString();
-            //String s = "{'" + vgrId + "':'" + sn + "'}";
-            //            String s = "{'kalle':2,'alfons':4}";
+            // String s = "{'" + vgrId + "':'" + sn + "'}";
+            // String s = "{'kalle':2,'alfons':4}";
             System.out.println(result);
             bos.write(result.getBytes());
         } catch (IOException e) {
@@ -150,18 +158,19 @@ public class DentalGrantController {
             // It's a search request
             LdapUser ldapUser = dentalLdapService.getLdapUserByUid(vgrId);
 
-
             if (ldapUser != null) {
                 addAttributesToModel(model, ldapUser);
                 if (ldapUser.getAttributeValue("hsaPersonPrescriptionCode") == null) {
-                    model.addAttribute("message", "Denna person är ej förskrivare och kan därför inte användas för "
-                            + "intyg.");
+                    model.addAttribute("message",
+                            "Denna person är ej förskrivare och kan därför inte användas för " + "intyg.");
                 }
             } else {
-                model.addAttribute("message", "Ingen användare hittades. Observera att du måste söka på fullständigt"
-                        + " VGR-ID om du inte har javascript aktiverat.");
+                model.addAttribute("message",
+                        "Ingen användare hittades. Observera att du måste söka på fullständigt"
+                                + " VGR-ID om du inte har javascript aktiverat.");
             }
-        } else if (request.getParameter("submitGrant") != null || request.getParameter("renewGrant") != null) {
+        } else if (request.getParameter("submitGrant") != null || request.getParameter("renewGrant") != null
+                || request.getParameter("confirmed") != null) {
             List<String> errorMessages = new ArrayList<String>();
             model.addAttribute("errorMessages", errorMessages);
 
@@ -198,17 +207,17 @@ public class DentalGrantController {
                     if ("UF".equals(patient.getStatus().getValue())) {
                         errorMessages.add("Patienten är utflyttad.");
                     }
-                    if (patient.isSekretessmarkering()) {
-                        errorMessages.add("Patienten har sekretessbelagda uppgifter."); // todo ska man ändå kunna skicka intyg?
-                    }
                     if (patient.getIntygsnummerFh() != null && patient.getIntygsnummerFh() > 0) {
                         // Patient already has a grant. Is this a renew request?
-                        if (request.getParameter("renewGrant") != null) {
-                            // Do nothing here. Just do not add to errorMessages. The call to insertCertificate call
+                        if (request.getParameter("renewGrant") != null
+                                || request.getParameter("confirmed") != null) {
+                            // Do nothing here. Just do not add to errorMessages. The call to insertCertificate
+                            // call
                             // will renew it automatically.
                         } else {
                             errorMessages.add("Patienten har redan ett intyg, giltigt till "
-                                    + formatDate(patient.getIntygGiltighetstidFh().getValue()) + ". Vill du förnya?");
+                                    + formatDate(patient.getIntygGiltighetstidFh().getValue())
+                                    + ". Vill du förnya?");
                             model.addAttribute("renewOption", true);
                         }
                     }
@@ -219,6 +228,7 @@ public class DentalGrantController {
                 }
 
                 Integer patientCategory = Integer.valueOf(request.getParameter("patientCategory"));
+                model.addAttribute("patientCategory", patientCategory);
 
                 User user = getUser(request);
 
@@ -231,19 +241,26 @@ public class DentalGrantController {
                         String hsaIdentity = ldapUser.getAttributeValue("hsaIdentity");
                         String prescriberFullName = ldapUser.getAttributeValue("fullName");
 
-                        certificateService.insertCertificate(personalNumber,
-                                patientCategory,
-                                patientNamn,
-                                patientAdress,
-                                patientPostadress,
-                                hsaIdentity,
-                                user.getScreenName() + ": " + user.getFullName(),
-                                hsaPersonPrescriptionCode,
-                                prescriberFullName);
+                        if (request.getParameter("confirmed") != null) {
+                            certificateService.insertCertificate(personalNumber, patientCategory, patientNamn,
+                                    patientAdress, patientPostadress,
+                                    // hsaIdentity,
+                                    null, user.getScreenName() + ": " + user.getFullName(),
+                                    hsaPersonPrescriptionCode, prescriberFullName);
+                            model.addAttribute("confirmed", true);
+                        }
 
-                        model.addAttribute("patientNamn", patientNamn);
-                        model.addAttribute("patientAdress", patientAdress);
-                        model.addAttribute("patientPostadress", patientPostadress);
+                        if (!patient.isSekretessmarkering()) {
+                            model.addAttribute("patientNamn", patientNamn);
+                            model.addAttribute("patientAdress", patientAdress);
+                            model.addAttribute("patientPostadress", patientPostadress);
+                        } else {
+                            String hiddenText = "Dold";
+                            model.addAttribute("patientNamn", hiddenText);
+                            model.addAttribute("patientAdress", hiddenText);
+                            model.addAttribute("patientPostadress", hiddenText);
+                        }
+
                         model.addAttribute("hsaPersonPrescriptionCode", hsaPersonPrescriptionCode);
                         model.addAttribute("prescriberFullName", prescriberFullName);
 
